@@ -6,7 +6,8 @@ import {
   Group,
   HelpOutline,
   PlayCircleFilledOutlined,
-  RssFeed, School,
+  RssFeed,
+  School,
   WorkOutline
 } from "@material-ui/icons";
 import { Users } from '../../dummyData';

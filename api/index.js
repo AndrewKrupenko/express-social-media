@@ -8,6 +8,8 @@ const morgan = require('morgan');
 const authRoute = require('./routes/auth');
 const userRoute = require('./routes/users');
 const postRoute = require('./routes/posts');
+const multer = require('multer');
+const path = require('path');
 
 dotenv.config();
 
@@ -16,10 +18,31 @@ mongoose.connect(dbURL)
   .then(() => app.listen(8800))
     .catch(err => console.log(err));
 
+// If you use this /images path don't make any request - just go to that directory
+app.use('/images', express.static(path.join(__dirname, 'public/images')));
+
 // middleware
 app.use(express.json());
 app.use(helmet());
 app.use(morgan('common'));
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/images');
+  },
+  filename: (req, file, cb) => {
+    cb(null, req.body.name); // came from data.append('name', fileName);
+  },
+})
+
+const upload = multer({ storage });
+app.post('/api/upload', upload.single('file'), (req, res) => {
+  try {
+    return res.status(200).json('File has been uploaded successfully!');
+  } catch (e) {
+    console.log(e);
+  }
+});
 
 app.use('/api/auth', authRoute);
 app.use('/api/users', userRoute);
