@@ -1,11 +1,14 @@
 import './share.css';
-import {Cancel, EmojiEmotions, Label, PermMedia, Room} from "@material-ui/icons";
+import { Cancel, EmojiEmotions, Label, PermMedia, Room } from "@material-ui/icons";
 import { useContext, useRef, useState } from "react";
 import { AuthContext } from "../../context/auth/AuthContext";
 import axios from "axios";
+import { PostContext } from "../../context/post/PostContext";
 
 const Share = () => {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+  const { dispatch } = useContext(PostContext);
+
   const { user } = useContext(AuthContext);
   const desc = useRef();
   const [file, setFile] = useState(null);
@@ -30,9 +33,10 @@ const Share = () => {
       }
     }
     try {
-      await axios.post('/posts', newPost);
-      // another option is to create a post context and update your post state
-      window.location.reload();
+      const createdPost = await axios.post('/posts', newPost);
+      dispatch({ type: "CREATE_POST", payload: createdPost.data });
+      setFile(null);
+      desc.current.value = "";
     } catch (e) {
       console.log(e);
     }

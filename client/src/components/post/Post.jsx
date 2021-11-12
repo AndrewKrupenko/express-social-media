@@ -1,21 +1,21 @@
 import './post.css';
 import { MoreVert } from "@material-ui/icons";
-import {useContext, useEffect, useState} from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { format } from 'timeago.js';
-import {Link} from "react-router-dom";
-import {AuthContext} from "../../context/auth/AuthContext";
+import { Link } from "react-router-dom";
+import { AuthContext } from "../../context/auth/AuthContext";
 
 const Post = ({ post }) => {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
-  const [like, setLike] = useState(post.likes.length);
+  const [like, setLike] = useState(post?.likes?.length);
   const [isLiked, setIsLiked] = useState(false);
   const [user, setUser] = useState({});
   const { user: currentUser } = useContext(AuthContext);
 
   useEffect(() => {
-    setIsLiked(post.likes.includes(currentUser._id));
-  }, [currentUser._id, post.likes]);
+    setIsLiked(post?.likes.includes(currentUser?._id));
+  }, [currentUser?._id, post.likes]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -40,7 +40,7 @@ const Post = ({ post }) => {
       <div className="postWrapper">
         <div className="postTop">
           <div className="postTopLeft">
-            <Link to={`profile/${user.username}`}>
+            <Link to={`/profile/${user.username}`}>
               <img
                 className="postProfileImg"
                 src={user.profilePicture ?
@@ -61,16 +61,10 @@ const Post = ({ post }) => {
         </div>
         <div className="postCenter">
           <p className="postText">{ post?.desc }</p>
-          <img className="postImg" src={PF+post.img} alt="" />
+          { post?.img && <img className="postImg" src={PF + post.img} alt=""/>}
         </div>
         <div className="postBottom">
           <div className="postBottomLeft">
-            <img
-              className="likeIcon"
-              src={`${PF}like.png`}
-              alt=""
-              onClick={likeHandler}
-            />
             <img
               className="likeIcon"
               src={`${PF}heart.png`}
@@ -78,9 +72,6 @@ const Post = ({ post }) => {
               onClick={likeHandler}
             />
             <span className="postLikeCounter">{ like } people like it</span>
-          </div>
-          <div className="postBottomRight">
-            <span className="postCommentText">{ post.comment } comments</span>
           </div>
         </div>
       </div>

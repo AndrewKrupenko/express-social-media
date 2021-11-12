@@ -10,8 +10,7 @@ import {
   School,
   WorkOutline
 } from "@material-ui/icons";
-import { Users } from '../../dummyData';
-import CloseFriend from "../closeFriend/CloseFriend";
+import { Link } from "react-router-dom";
 
 const Sidebar = () => {
   return (
@@ -24,7 +23,10 @@ const Sidebar = () => {
           </li>
           <li className="sidebarListItem">
             <Chat className="sidebarIcon" />
-            <span className="sidebarListItemText">Chats</span>
+            <Link
+              className="sidebarListItemText"
+              to="/messenger"
+            ><b>Chats</b></Link>
           </li>
           <li className="sidebarListItem">
             <PlayCircleFilledOutlined className="sidebarIcon" />
@@ -57,11 +59,6 @@ const Sidebar = () => {
         </ul>
         <button className="sidebarButton">Show More</button>
         <hr className="sidebarHr" />
-        <ul className="sidebarFriendList">
-          {Users.map(user => (
-            <CloseFriend key={user.id} user={user} />
-          ))}
-        </ul>
       </div>
     </div>
   );

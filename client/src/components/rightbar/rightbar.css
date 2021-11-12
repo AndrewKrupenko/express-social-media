@@ -62,13 +62,9 @@
     font-weight: 300;
 }
 
-.rightbarFollowings {
-    display: flex;
-    flex-wrap: wrap;
-}
-
 .rightbarFollowings a {
-    width: calc(100%/3);
+    display: inline-block;
+    margin-right: 15px;
 }
 
 .rightbarFollowing {

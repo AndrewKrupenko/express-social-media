@@ -1,37 +1,38 @@
 import './rightbar.css';
-import { Users } from '../../dummyData';
-import Online from "../online/Online";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/auth/AuthContext";
 import { Add, Remove } from "@material-ui/icons";
+import Friend from "../friend/Friend";
 
-const Rightbar = ({ user }) => {
+const Rightbar = ({ user, isHome }) => {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const [friends, setFriends] = useState([]);
   const { user: currentUser, dispatch } = useContext(AuthContext);
 
   const [isFollowed, setIsFollowed] = useState(
-    currentUser.followings.includes(user?._id)
+    currentUser?.followings.includes(user?._id)
   );
 
   useEffect(() => {
-    setIsFollowed(currentUser.followings.includes(user?._id));
+    setIsFollowed(currentUser?.followings.includes(user?._id));
   }, [currentUser, user?._id]);
 
   useEffect(() => {
     // function here because we can't use 'async' for useEffect
     const getFriends = async () => {
       try {
-        const friendsList = await axios.get('/users/friends/' + user._id);
+        const friendsList = await axios.get('/users/friends/' + user?._id);
         setFriends(friendsList.data);
       } catch (e) {
         console.log(e);
       }
     }
-    getFriends();
-  }, [user]);
+    if (user?._id) {
+      getFriends();
+    }
+  }, [user?._id]);
 
   const HomeRightbar = () => {
     return (
@@ -44,10 +45,10 @@ const Rightbar = ({ user }) => {
           </span>
         </div>
         <img className="rightbarAd" src={`${PF}ad.png`} alt="" />
-        <h4 className="rightbarTitle">Online Friends</h4>
+        <h4 className="rightbarTitle">My Friends:</h4>
         <ul className="rightbarFriendList">
-          {Users.map(user => (
-            <Online key={user.id} user={user} />
+          {friends.map(user => (
+            <Friend key={user._id} user={user} />
           ))}
         </ul>
       </>
@@ -76,7 +77,7 @@ const Rightbar = ({ user }) => {
   const ProfileRightbar = () => {
     return (
       <>
-        {user.username !== currentUser.username && (
+        {user?.username !== currentUser?.username && (
          <button className="rightbarFollowButton" onClick={handleFollowClick}>
            {isFollowed ? "Unfollow" : "Follow"}
            {isFollowed ? <Remove /> : <Add />}
@@ -128,7 +129,7 @@ const Rightbar = ({ user }) => {
   return (
     <div className="rightbar">
       <div className="rightbarWrapper">
-        {user ? <ProfileRightbar /> : <HomeRightbar />}
+        {!isHome ? <ProfileRightbar /> : <HomeRightbar />}
       </div>
     </div>
   );
